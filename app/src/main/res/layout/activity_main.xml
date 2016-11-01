@@ -26,8 +26,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Draw"/>
-    <RelativeLayout
-        android:id="@+id/layout_control"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    <com.hecorat.videotimeline.NewHorizontalScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#aa424242">
+        <RelativeLayout
+            android:id="@+id/layout_control"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_green_light">
+            <LinearLayout
+                android:id="@+id/layout_video"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"/>
+        </RelativeLayout>
+    </com.hecorat.videotimeline.NewHorizontalScrollView>
 </LinearLayout>

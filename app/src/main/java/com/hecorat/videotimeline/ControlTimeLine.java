@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 /**
  * Created by bkmsx on 01/11/2016.
@@ -27,7 +27,7 @@ public class ControlTimeLine extends ImageView {
     RectF thumbLeft, thumbRight;
     Rect lineAbove, lineBelow;
     Paint paint;
-    LinearLayout.LayoutParams params;
+    RelativeLayout.LayoutParams params;
     OnControlTimeLineChanged mOnControlTimeLineChanged;
 
     public ControlTimeLine(Context context, int x, int y, int widthTimeLine, int heightTimeLine) {
@@ -44,13 +44,15 @@ public class ControlTimeLine extends ImageView {
         end = maxPosition;
         updateLayout(minPosition, maxPosition);
         paint = new Paint();
-        params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height);
+        params = new RelativeLayout.LayoutParams(width+x, height);
         setLayoutParams(params);
         setOnTouchListener(onTouchListener);
         mOnControlTimeLineChanged = (OnControlTimeLineChanged) context;
     }
 
     private void updateLayout(int start, int end) {
+        start += thumbWidth;
+        end += thumbWidth;
         thumbLeft = new RectF(start - thumbWidth, 0, start, height);
         thumbRight = new RectF(end, 0, end + thumbWidth, height);
         lineAbove = new Rect(start - thumbWidth / 2, 0, end + thumbWidth / 2, lineWeight);
@@ -99,6 +101,7 @@ public class ControlTimeLine extends ImageView {
                     else if (oldX > end - epsX && oldX < end + epsX && oldY > -epsY && oldY < height + epsY) {
                         touch = TOUCH_RIGHT;
                     }
+                    log("control down");
                     return true;
                 case MotionEvent.ACTION_MOVE:
                     moveX = motionEvent.getX() - oldX;
@@ -117,8 +120,6 @@ public class ControlTimeLine extends ImageView {
                                 negativeTouch = true;
                             }
                         }
-                        log("Left: current max position: " + currentMaxPosition);
-                        log("Left: start: " + startPosition + " end: " + endPosition);
                         updateLayout(startPosition, endPosition);
                     }
                     if (touch == TOUCH_RIGHT) {
@@ -130,10 +131,10 @@ public class ControlTimeLine extends ImageView {
                         if (endPosition < minPosition) {
                             endPosition = minPosition;
                         }
-                        log("Right: start: " + startPosition + " end: " + endPosition);
                         updateLayout(startPosition, endPosition);
                     }
-                    return true;
+                    log("control move");
+                    return false;
                 case MotionEvent.ACTION_UP:
                     int currentDuration = endPosition - startPosition;
                     start = minPosition;
@@ -152,10 +153,10 @@ public class ControlTimeLine extends ImageView {
                     currentDuration = end - start;
                     startTime = currentMinPosition*Constants.SCALE_VALUE;
                     endTime = (currentMinPosition + currentDuration) * Constants.SCALE_VALUE;
-                    log("Start time: "+startTime+" End time: "+endTime);
                     mOnControlTimeLineChanged.updateTimeLine(startTime, endTime);
                     updateLayout(start, end);
                     touch = 0;
+                    log("control up");
                     return true;
                 default:
                     break;

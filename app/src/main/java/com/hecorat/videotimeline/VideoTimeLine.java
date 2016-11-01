@@ -10,7 +10,7 @@ import android.media.MediaMetadataRetriever;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
@@ -24,7 +24,7 @@ public class VideoTimeLine extends ImageView {
     MediaMetadataRetriever retriever;
     int durationVideo;
     Bitmap defaultBitmap;
-    RelativeLayout.LayoutParams params;
+    LinearLayout.LayoutParams params;
     int startTime, endTime;
     int startPosition;
 
@@ -50,7 +50,7 @@ public class VideoTimeLine extends ImageView {
 
         paint = new Paint();
 
-        params = new RelativeLayout.LayoutParams(width, height);
+        params = new LinearLayout.LayoutParams(width, height);
         setLayoutParams(params);
         defaultBitmap = createDefaultBitmap();
         drawTimeLine(startTime, endTime);

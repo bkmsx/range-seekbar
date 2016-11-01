@@ -7,14 +7,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 public class MainActivity extends AppCompatActivity implements ControlTimeLine.OnControlTimeLineChanged{
-    LinearLayout mMainLayout;
-    VideoTimeLine videoTimeLine;
+    LinearLayout mMainLayout, mLayoutVideo;
+    VideoTimeLine videoTimeLine, videoTimeLine2;
     RelativeLayout mLayoutControl;
+    RelativeLayout.LayoutParams paramsControl;
     int height = 100;
+    HorizontalScrollView mScrollView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,13 +25,18 @@ public class MainActivity extends AppCompatActivity implements ControlTimeLine.O
         setContentView(R.layout.activity_main);
         mMainLayout = (LinearLayout) findViewById(R.id.main_layout);
         mLayoutControl = (RelativeLayout) findViewById(R.id.layout_control);
-        String videoPath = Environment.getExternalStorageDirectory()+"/AzRecorderFree/test.mp4";
+        mLayoutVideo = (LinearLayout) findViewById(R.id.layout_video);
+        String videoPath = Environment.getExternalStorageDirectory()+"/a.mp4";
         videoTimeLine = new VideoTimeLine(this, videoPath, height);
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) videoTimeLine.getLayoutParams();
+        videoTimeLine2 = new VideoTimeLine(this, videoPath, height);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) videoTimeLine.getLayoutParams();
         params.leftMargin = 100;
-        mLayoutControl.addView(videoTimeLine,params);
-        ControlTimeLine controlTimeLine = new ControlTimeLine(this, 100, 0 , videoTimeLine.width, height);
+        mLayoutVideo.addView(videoTimeLine,params);
+        mLayoutVideo.addView(videoTimeLine2);
+        ControlTimeLine controlTimeLine = new ControlTimeLine(this, 0, 0 , videoTimeLine.width, height);
         mLayoutControl.addView(controlTimeLine);
+        paramsControl = (RelativeLayout.LayoutParams) controlTimeLine.getLayoutParams();
+        paramsControl.leftMargin = 100 - controlTimeLine.thumbWidth;
         final EditText startInput = (EditText) findViewById(R.id.start_time);
         final EditText endInput = (EditText) findViewById(R.id.end_time);
         final Button btnDraw = (Button) findViewById(R.id.btn_draw);
@@ -40,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements ControlTimeLine.O
                 videoTimeLine.drawTimeLine(startTime, endTime);
             }
         });
+        mScrollView = (HorizontalScrollView) findViewById(R.id.scroll_view);
+        mScrollView.requestDisallowInterceptTouchEvent(true);
     }
 
     @Override
