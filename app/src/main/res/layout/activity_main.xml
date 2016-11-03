@@ -10,26 +10,10 @@
     android:id="@+id/main_layout"
     android:orientation="vertical"
     tools:context="com.hecorat.videotimeline.MainActivity">
-    <EditText
-        android:id="@+id/start_time"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        />
-    <EditText
-        android:id="@+id/end_time"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:inputType="number"/>
-    <Button
-        android:id="@+id/btn_draw"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Draw"/>
     <com.hecorat.videotimeline.NewHorizontalScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:background="#aa424242">
         <RelativeLayout
             android:id="@+id/layout_control"

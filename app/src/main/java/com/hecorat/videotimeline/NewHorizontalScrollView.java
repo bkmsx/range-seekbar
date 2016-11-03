@@ -9,47 +9,53 @@ import android.widget.HorizontalScrollView;
 /**
  * Created by bkmsx on 01/11/2016.
  */
-public class NewHorizontalScrollView extends HorizontalScrollView{
-
-    float startY;
-
+public class NewHorizontalScrollView extends HorizontalScrollView {
 
     public NewHorizontalScrollView(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
 
+    }
+    float startX;
+    public boolean scroll = true;
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent e)
-    {
-        switch (e.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                startY = e.getX();
-                log("scrollview intercept down");
-                break;
-            case MotionEvent.ACTION_MOVE:
-                log("scrollview intercept move");
-                break;
-            case MotionEvent.ACTION_UP:
-                log("scrollview intercept up");
-                break;
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        if (scroll) {
+            switch (event.getAction()){
+                case MotionEvent.ACTION_DOWN:
+                    startX = event.getX();
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    float moveX = Math.abs(event.getX()-startX);
+                    if (moveX>100) {
+                        return true;
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+
+                    break;
+            }
         }
         return false;
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent e) {
-        switch (e.getAction()) {
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                log("scrollview ontouch down");
                 break;
-            case MotionEvent.ACTION_MOVE:
-                log("scrollview ontouch move");
+            case MotionEvent.ACTION_CANCEL:
                 break;
             case MotionEvent.ACTION_UP:
-                log("scrollview ontouch up");
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float x = event.getX();
+                float deltaX = x - startX;
+                smoothScrollBy((int)(-3*deltaX), 0);
+                startX = event.getX();
                 break;
         }
-        return super.onTouchEvent(e);
+
+        return true;
     }
 
     private void log(String msg){

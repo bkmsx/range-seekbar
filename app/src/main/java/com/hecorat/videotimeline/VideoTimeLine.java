@@ -18,8 +18,8 @@ import java.util.ArrayList;
  * Created by bkmsx on 31/10/2016.
  */
 public class VideoTimeLine extends ImageView {
-    int width, height, halfWidth, halfHeight;
-    Rect rectBackground, leftThumb, rightThumb;
+    int width, height;
+    Rect rectBackground;
     Paint paint;
     MediaMetadataRetriever retriever;
     int durationVideo;
@@ -27,7 +27,8 @@ public class VideoTimeLine extends ImageView {
     LinearLayout.LayoutParams params;
     int startTime, endTime;
     int startPosition;
-
+    int leftPosition;
+    TimeLineStatus timeLineStatus;
 
     ArrayList<Bitmap> listBitmap;
     public VideoTimeLine(Context context, String videoPath, int height) {
@@ -40,13 +41,7 @@ public class VideoTimeLine extends ImageView {
         startTime = 0;
         endTime = durationVideo;
 
-
         this.height = height;
-
-        halfWidth = width/2;
-        halfHeight = height/2;
-
-        leftThumb = new Rect(-30, halfHeight -30, 30, halfHeight+30);
 
         paint = new Paint();
 
@@ -54,8 +49,20 @@ public class VideoTimeLine extends ImageView {
         setLayoutParams(params);
         defaultBitmap = createDefaultBitmap();
         drawTimeLine(startTime, endTime);
+        initTimeLineStatus();
 
         new AsyncTaskExtractFrame().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    public void initTimeLineStatus(){
+        timeLineStatus = new TimeLineStatus();
+        timeLineStatus.start = 0;
+        timeLineStatus.end = width;
+        timeLineStatus.currentMinPosition = 0;
+        timeLineStatus.currentMaxPosition = width;
+        timeLineStatus.maxPosition = width;
+        timeLineStatus.startTime = 0;
+        timeLineStatus.endTime = endTime;
     }
 
     public void drawTimeLine(int startTime, int endTime) {
@@ -67,6 +74,11 @@ public class VideoTimeLine extends ImageView {
         params.width = width;
         log("Start: "+startTime+" End: "+endTime);
         invalidate();
+    }
+
+    public void setLeftPosition(int value) {
+        leftPosition = value;
+        timeLineStatus.leftMargin = value - ControlTimeLine.THUMB_WIDTH;
     }
 
     @Override
@@ -82,13 +94,10 @@ public class VideoTimeLine extends ImageView {
 
     private Bitmap createDefaultBitmap(){
         Paint paint = new Paint();
-        //size can be customized
         Bitmap bitmap = Bitmap.createBitmap(400, 400, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        //Draw black background
         paint.setColor(Color.BLACK);
         canvas.drawRect(0, 0, bitmap.getWidth(), bitmap.getHeight(), paint);
-        //draw white text
         return bitmap;
     }
 
@@ -126,6 +135,4 @@ public class VideoTimeLine extends ImageView {
     private void log(String msg){
         Log.e("Video TimeLine",msg);
     }
-
-
 }
